@@ -1,0 +1,109 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;800&display=swap');
+
+:root {
+  --primary: #1aac83;
+  --error: #e7195a;
+}
+
+body {
+  margin: 0;
+  font-family: "Poppins", sans-serif;
+  background: #f1f1f1;
+}
+
+.pages {
+  max-width: 1400px;
+  padding: 20px;
+  margin: 0 auto;
+}
+
+/* Header/Navbar */
+header {
+  background: #fff;
+}
+header .container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 10px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+nav {
+  display: flex;
+  align-items: center;
+}
+nav a,
+nav button {
+  margin-left: 10px;
+}
+nav button {
+  background: #fff;
+  color: var(--primary);
+  border: 2px solid var(--primary);
+  padding: 6px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-family: "Poppins";
+  font-size: 1em;
+}
+
+label,
+input,
+select,
+button {
+  display: block;
+  width: 100%;
+}
+input,
+select {
+  padding: 10px;
+  margin-top: 10px;
+  margin-bottom: 20px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+button {
+  background: var(--primary);
+  border: 0;
+  color: #fff;
+  padding: 10px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+input.error {
+  border: 1px solid var(--error);
+}
+div.error {
+  padding: 10px;
+  background: #ffefef;
+  border: 1px solid var(--error);
+  color: var(--error);
+  border-radius: 4px;
+  margin: 10px 0;
+}
+
+.home {
+  display: grid;
+  grid-template-columns: 3fr 1fr;
+  gap: 30px;
+}
+
+.transaction-details {
+  background: #fff;
+  border-radius: 4px;
+  padding: 20px;
+  margin-bottom: 15px;
+  position: relative;
+  box-shadow: 2px 2px 5px rgba(0,0,0,0.05);
+}
+
+form.signup,
+form.login {
+  max-width: 400px;
+  margin: 40px auto;
+  padding: 20px;
+  background: #fff;
+  border-radius: 4px;
+}
