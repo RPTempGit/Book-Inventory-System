@@ -22,11 +22,8 @@ const Dashboard = () => {
     }, [dispatch, user])
 
     return (
-        <div className="grid md:grid-cols-3 gap-4 mt-4">
         <div className="md:col-span-2">
             {transactions && transactions.map(t => <TransactionDetails key={t._id} transaction={t} />)}
-        </div>
-        <TransactionForm />
         </div>
     )
 }

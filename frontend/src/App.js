@@ -4,6 +4,7 @@ import Navbar from "./components/Navbar"
 import Dashboard from "./pages/Dashboard"
 import Login from "./pages/Login"
 import Signup from "./pages/Signup"
+import TransactionPage from "./pages/TransactionPage"
 import StockTakePage from "./pages/StockTakePage"
 import ReportsPage from "./pages/ReportsPage"
 
@@ -18,6 +19,10 @@ function App() {
                     <Route 
                         path="/" 
                         element={user ? <Dashboard /> : <Navigate to="/login" />} 
+                    />
+                    <Route 
+                        path="/transaction" 
+                        element={user ? <TransactionPage /> : <Navigate to="/login" />} 
                     />
                     <Route 
                         path="/stocktake" 

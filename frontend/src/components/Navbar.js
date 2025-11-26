@@ -21,6 +21,7 @@ const Navbar = () => {
                         <>
                             <span className="text-gray-600">{user.email} ({user.role})</span>
                             <Link to="/">Dashboard</Link>
+                            <Link to="/transaction">Transaction</Link>
                             <Link to="/stocktake">Stock Take</Link>
                             <Link to="/reports">Reports</Link>
                             <button onClick={handleClick} className="border border-emerald-500 text-emerald-500 px-3 py-1 rounded">
