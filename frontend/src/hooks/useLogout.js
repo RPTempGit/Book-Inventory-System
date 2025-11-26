@@ -1,9 +1,9 @@
 import { useAuthContext } from "./useAuthContext"
-import { useTransactionsContext } from "./useTransactionsContext"
+import { useTransactionContext } from "./useTransactionContext"
 
 export const useLogout = () => {
   const { dispatch } = useAuthContext()
-  const { dispatch: dispatchTransactions } = useTransactionsContext()
+  const { dispatch: dispatchTransactions } = useTransactionContext()
 
   const logout = () => {
     localStorage.removeItem("user")
