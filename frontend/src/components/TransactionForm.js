@@ -1,61 +1,63 @@
-import { useState } from "react"
-import { useTransactionContext } from "../hooks/useTransactionContext"
-import { useAuthContext } from "../hooks/useAuthContext"
-
-const TransactionForm = () => {
+const TransactionForm = ({ editingTransaction, setEditingTransaction }) => {
   const { dispatch } = useTransactionContext()
   const { user } = useAuthContext()
 
   const [type, setType] = useState("inbound")
-  const [item_name, setItemName] = useState("")
+  const [name, setName] = useState("")
   const [qty, setQty] = useState("")
   const [notes, setNotes] = useState("")
-  const [from_location, setFromLocation] = useState("")
-  const [to_location, setToLocation] = useState("")
-  const [date, setDate] = useState(new Date().toISOString().substring(0, 10))
   const [error, setError] = useState(null)
+
+  useEffect(() => {
+    if (editingTransaction) {
+      setType(editingTransaction.type)
+      setName(editingTransaction.name)
+      setQty(editingTransaction.qty)
+      setNotes(editingTransaction.notes)
+    }
+  }, [editingTransaction])
 
   const handleSubmit = async (e) => {
     e.preventDefault()
     if (!user) return setError("You must be logged in")
 
-    const transaction = {
-      type,
-      item_name,
-      qty,
-      notes,
-      from_location: from_location || null,
-      to_location: to_location || null,
-      date
-    }
+    const transactionData = { type, name, qty, notes }
 
-    const response = await fetch(`${process.env.REACT_APP_API_URL}/api/transactions`, {
-      method: "POST",
+    const url = editingTransaction 
+      ? `${process.env.REACT_APP_API_URL}/api/transactions/${editingTransaction._id}`
+      : `${process.env.REACT_APP_API_URL}/api/transactions`
+
+    const method = editingTransaction ? "PUT" : "POST"
+
+    const res = await fetch(url, {
+      method,
       headers: {
         "Content-Type": "application/json",
         "Authorization": `Bearer ${user.token}`
       },
-      body: JSON.stringify(transaction)
+      body: JSON.stringify(transactionData)
     })
 
-    const json = await response.json()
-    if (!response.ok) setError(json.error)
-    if (response.ok) {
+    const json = await res.json()
+
+    if (!res.ok) setError(json.error)
+    if (res.ok) {
+      dispatch({ 
+        type: editingTransaction ? "UPDATE_TRANSACTION" : "CREATE_TRANSACTION", 
+        payload: json 
+      })
       setType("inbound")
-      setItemName("")
+      setName("")
       setQty("")
       setNotes("")
-      setFromLocation("")
-      setToLocation("")
-      setDate(new Date().toISOString().substring(0, 10))
       setError(null)
-      dispatch({ type: "CREATE_TRANSACTION", payload: json })
+      if (editingTransaction) setEditingTransaction(null)
     }
   }
 
   return (
     <form onSubmit={handleSubmit} className="p-4 bg-white rounded shadow">
-      <h3>Add Transaction</h3>
+      <h3>{editingTransaction ? "Edit Transaction" : "Add Transaction"}</h3>
 
       <label>Type:</label>
       <select value={type} onChange={(e) => setType(e.target.value)}>
@@ -64,64 +66,18 @@ const TransactionForm = () => {
         <option value="movement">Movement</option>
       </select>
 
-      <label>Item Name:</label>
-      <input
-        type="text"
-        value={item_name}
-        onChange={(e) => setItemName(e.target.value)}
-        required
-      />
+      <label>Name:</label>
+      <input type="text" value={name} onChange={(e) => setName(e.target.value)} required />
 
       <label>Quantity:</label>
-      <input
-        type="number"
-        value={qty}
-        onChange={(e) => setQty(e.target.value)}
-        required
-      />
+      <input type="number" value={qty} onChange={(e) => setQty(e.target.value)} required />
 
       <label>Notes:</label>
-      <input
-        type="text"
-        value={notes}
-        onChange={(e) => setNotes(e.target.value)}
-      />
+      <input type="text" value={notes} onChange={(e) => setNotes(e.target.value)} />
 
-      {(type === "outbound" || type === "movement") && (
-        <>
-          <label>From Location:</label>
-          <input
-            type="text"
-            value={from_location}
-            onChange={(e) => setFromLocation(e.target.value)}
-            placeholder="Enter From Location"
-            required
-          />
-        </>
-      )}
-
-      {(type === "inbound" || type === "movement") && (
-        <>
-          <label>To Location:</label>
-          <input
-            type="text"
-            value={to_location}
-            onChange={(e) => setToLocation(e.target.value)}
-            placeholder="Enter To Location"
-            required
-          />
-        </>
-      )}
-
-      <label>Date:</label>
-      <input
-        type="date"
-        value={date}
-        onChange={(e) => setDate(e.target.value)}
-        required
-      />
-
-      <button className="bg-green-500 text-white px-4 py-2 mt-2">Save</button>
+      <button className="bg-green-500 text-white px-4 py-2 mt-2">
+        {editingTransaction ? "Update" : "Save"}
+      </button>
       {error && <div className="text-red-500 mt-2">{error}</div>}
     </form>
   )

@@ -1,4 +1,4 @@
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { useTransactionContext } from "../hooks/useTransactionContext"
 import { useStockTakeContext } from "../hooks/useStockTakeContext"
 import { useAuthContext } from "../hooks/useAuthContext"
@@ -12,6 +12,9 @@ const Dashboard = () => {
   const { transactions, dispatch: dispatchTransactions } = useTransactionContext()
   const { stockTakes, dispatch: dispatchStockTakes } = useStockTakeContext()
   const { user } = useAuthContext()
+
+  const [editingTransaction, setEditingTransaction] = useState(null)
+  const [editingStockTake, setEditingStockTake] = useState(null)
 
   useEffect(() => {
     const fetchTransactions = async () => {
@@ -42,17 +45,25 @@ const Dashboard = () => {
       <div>
         <h2 className="text-xl font-bold mb-2">Transactions</h2>
         {transactions && transactions.map(t => (
-          <TransactionDetails key={t._id} transaction={t} />
+          <TransactionDetails 
+            key={t._id} 
+            transaction={t} 
+            setEditingTransaction={setEditingTransaction} 
+          />
         ))}
-        <TransactionForm />
+        <TransactionForm editingTransaction={editingTransaction} setEditingTransaction={setEditingTransaction} />
       </div>
 
       <div>
         <h2 className="text-xl font-bold mb-2">Stock Takes</h2>
         {stockTakes && stockTakes.map(s => (
-          <StockTakeDetails key={s._id} stockTake={s} />
+          <StockTakeDetails 
+            key={s._id} 
+            stockTake={s} 
+            setEditingStockTake={setEditingStockTake} 
+          />
         ))}
-        <StockTakeForm />
+        <StockTakeForm editingStockTake={editingStockTake} setEditingStockTake={setEditingStockTake} />
       </div>
 
     </div>
