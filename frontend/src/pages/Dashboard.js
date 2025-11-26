@@ -3,7 +3,6 @@ import { useTransactionContext } from "../hooks/useTransactionContext"
 import { useStockTakeContext } from "../hooks/useStockTakeContext"
 import { useAuthContext } from "../hooks/useAuthContext"
 
-// Components
 import TransactionDetails from "../components/TransactionDetails"
 import TransactionForm from "../components/TransactionForm"
 import StockTakeDetails from "../components/StockTakeDetails"
@@ -40,7 +39,6 @@ const Dashboard = () => {
   return (
     <div className="grid md:grid-cols-2 gap-6 mt-4">
 
-      {/* Transactions Section */}
       <div>
         <h2 className="text-xl font-bold mb-2">Transactions</h2>
         {transactions && transactions.map(t => (
@@ -49,7 +47,6 @@ const Dashboard = () => {
         <TransactionForm />
       </div>
 
-      {/* Stock-Take Section */}
       <div>
         <h2 className="text-xl font-bold mb-2">Stock Takes</h2>
         {stockTakes && stockTakes.map(s => (
