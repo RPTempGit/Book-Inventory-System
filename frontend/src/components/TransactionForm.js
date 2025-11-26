@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { useTransactionContext } from "../hooks/useTransactionContext"
 import { useAuthContext } from "../hooks/useAuthContext"
 
@@ -7,35 +7,23 @@ const TransactionForm = () => {
   const { user } = useAuthContext()
 
   const [type, setType] = useState("inbound")
-  const [itemName, setItemName] = useState("") // user types the item name
+  const [item_name, setItemName] = useState("")
   const [qty, setQty] = useState("")
+  const [notes, setNotes] = useState("")
   const [from_location, setFromLocation] = useState("")
   const [to_location, setToLocation] = useState("")
   const [date, setDate] = useState(new Date().toISOString().substring(0, 10))
-  const [locations, setLocations] = useState([])
   const [error, setError] = useState(null)
-
-  useEffect(() => {
-    const fetchLocations = async () => {
-      const res = await fetch(`${process.env.REACT_APP_API_URL}/api/locations`, {
-        headers: { "Authorization": `Bearer ${user.token}` }
-      })
-      const data = await res.json()
-      if (res.ok) setLocations(data)
-    }
-
-    if (user) fetchLocations()
-  }, [user])
 
   const handleSubmit = async (e) => {
     e.preventDefault()
     if (!user) return setError("You must be logged in")
-    if (!itemName) return setError("Item name is required")
 
     const transaction = {
       type,
-      item_name: itemName, 
+      item_name,
       qty,
+      notes,
       from_location: from_location || null,
       to_location: to_location || null,
       date
@@ -51,16 +39,18 @@ const TransactionForm = () => {
     })
 
     const json = await response.json()
-    if (!response.ok) return setError(json.error)
-
-    setType("inbound")
-    setItemName("")
-    setQty("")
-    setFromLocation("")
-    setToLocation("")
-    setDate(new Date().toISOString().substring(0, 10))
-    setError(null)
-    dispatch({ type: "CREATE_TRANSACTION", payload: json })
+    if (!response.ok) setError(json.error)
+    if (response.ok) {
+      setType("inbound")
+      setItemName("")
+      setQty("")
+      setNotes("")
+      setFromLocation("")
+      setToLocation("")
+      setDate(new Date().toISOString().substring(0, 10))
+      setError(null)
+      dispatch({ type: "CREATE_TRANSACTION", payload: json })
+    }
   }
 
   return (
@@ -77,7 +67,7 @@ const TransactionForm = () => {
       <label>Item Name:</label>
       <input
         type="text"
-        value={itemName}
+        value={item_name}
         onChange={(e) => setItemName(e.target.value)}
         required
       />
@@ -90,35 +80,36 @@ const TransactionForm = () => {
         required
       />
 
+      <label>Notes:</label>
+      <input
+        type="text"
+        value={notes}
+        onChange={(e) => setNotes(e.target.value)}
+      />
+
       {(type === "outbound" || type === "movement") && (
         <>
           <label>From Location:</label>
-          <select
+          <input
+            type="text"
             value={from_location}
             onChange={(e) => setFromLocation(e.target.value)}
+            placeholder="Enter From Location"
             required
-          >
-            <option value="">Select From Location</option>
-            {locations.map(l => (
-              <option key={l._id} value={l._id}>{l.name}</option>
-            ))}
-          </select>
+          />
         </>
       )}
 
       {(type === "inbound" || type === "movement") && (
         <>
           <label>To Location:</label>
-          <select
+          <input
+            type="text"
             value={to_location}
             onChange={(e) => setToLocation(e.target.value)}
+            placeholder="Enter To Location"
             required
-          >
-            <option value="">Select To Location</option>
-            {locations.map(l => (
-              <option key={l._id} value={l._id}>{l.name}</option>
-            ))}
-          </select>
+          />
         </>
       )}
 

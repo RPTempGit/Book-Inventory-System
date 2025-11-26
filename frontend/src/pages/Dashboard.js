@@ -1,31 +1,65 @@
 import { useEffect } from "react"
 import { useTransactionContext } from "../hooks/useTransactionContext"
+import { useStockTakeContext } from "../hooks/useStockTakeContext"
 import { useAuthContext } from "../hooks/useAuthContext"
+
+// Components
 import TransactionDetails from "../components/TransactionDetails"
 import TransactionForm from "../components/TransactionForm"
+import StockTakeDetails from "../components/StockTakeDetails"
+import StockTakeForm from "../components/StockTakeForm"
 
 const Dashboard = () => {
-    const { transactions, dispatch } = useTransactionContext()
-    const { user } = useAuthContext()
+  const { transactions, dispatch: dispatchTransactions } = useTransactionContext()
+  const { stockTakes, dispatch: dispatchStockTakes } = useStockTakeContext()
+  const { user } = useAuthContext()
 
-    useEffect(() => {
-        const fetchTransactions = async () => {
-            const response = await fetch(`${ process.env.REACT_APP_API_URL }/api/transactions`, {
-                headers: { "Authorization": `Bearer ${user.token}` }
-            })
-            const json = await response.json()
-            if (response.ok) {
-                dispatch({ type: "SET_TRANSACTIONS", payload: json })
-            }
-        }
-        if (user) fetchTransactions()
-    }, [dispatch, user])
+  useEffect(() => {
+    const fetchTransactions = async () => {
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/api/transactions`, {
+        headers: { "Authorization": `Bearer ${user.token}` }
+      })
+      const data = await res.json()
+      if (res.ok) dispatchTransactions({ type: "SET_TRANSACTIONS", payload: data })
+    }
 
-    return (
-        <div className="md:col-span-2">
-            {transactions && transactions.map(t => <TransactionDetails key={t._id} transaction={t} />)}
-        </div>
-    )
+    const fetchStockTakes = async () => {
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/api/stocktake`, {
+        headers: { "Authorization": `Bearer ${user.token}` }
+      })
+      const data = await res.json()
+      if (res.ok) dispatchStockTakes({ type: "SET_STOCKTAKES", payload: data })
+    }
+
+    if (user) {
+      fetchTransactions()
+      fetchStockTakes()
+    }
+  }, [dispatchTransactions, dispatchStockTakes, user])
+
+  return (
+    <div className="grid md:grid-cols-2 gap-6 mt-4">
+
+      {/* Transactions Section */}
+      <div>
+        <h2 className="text-xl font-bold mb-2">Transactions</h2>
+        {transactions && transactions.map(t => (
+          <TransactionDetails key={t._id} transaction={t} />
+        ))}
+        <TransactionForm />
+      </div>
+
+      {/* Stock-Take Section */}
+      <div>
+        <h2 className="text-xl font-bold mb-2">Stock Takes</h2>
+        {stockTakes && stockTakes.map(s => (
+          <StockTakeDetails key={s._id} stockTake={s} />
+        ))}
+        <StockTakeForm />
+      </div>
+
+    </div>
+  )
 }
 
 export default Dashboard
