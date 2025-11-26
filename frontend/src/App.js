@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom"
 import { useAuthContext } from "./hooks/useAuthContext"
 import Navbar from "./components/Navbar"
-import Home from "./pages/Home"
+import Dashboard from "./pages/Dashboard"
 import Login from "./pages/Login"
 import Signup from "./pages/Signup"
 import StockTakePage from "./pages/StockTakePage"
@@ -17,7 +17,7 @@ function App() {
                 <Routes>
                     <Route 
                         path="/" 
-                        element={user ? <Home /> : <Navigate to="/login" />} 
+                        element={user ? <Dashboard /> : <Navigate to="/login" />} 
                     />
                     <Route 
                         path="/stocktake" 
