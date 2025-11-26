@@ -5,7 +5,7 @@ export const StockTakeContext = createContext()
 export const stockTakeReducer = (state, action) => {
   switch (action.type) {
     case "SET_STOCKTAKES":
-      return { stockTakes: action.payload }
+      return { stockTakes: action.payload || [] }
     case "CREATE_STOCKTAKE":
       return { stockTakes: [action.payload, ...state.stockTakes] }
     case "DELETE_STOCKTAKE":
