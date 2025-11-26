@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom"
 import { useAuthContext } from "./hooks/useAuthContext"
+
 import Navbar from "./components/Navbar"
 import Dashboard from "./pages/Dashboard"
 import Login from "./pages/Login"
@@ -8,10 +9,16 @@ import TransactionPage from "./pages/TransactionPage"
 import StockTakePage from "./pages/StockTakePage"
 import ReportsPage from "./pages/ReportsPage"
 
+import { TransactionContextProvider } from "./context/TransactionContext"
+import { StockTakeContextProvider } from "./context/StockTakeContext"
+
 function App() {
     const { user } = useAuthContext()
 
     return (
+        <TransactionContextProvider>
+        <StockTakeContextProvider>
+
         <BrowserRouter>
             <Navbar />
             <div className="p-4 max-w-6xl mx-auto">
@@ -43,6 +50,9 @@ function App() {
                 </Routes>
             </div>
         </BrowserRouter>
+
+        </StockTakeContextProvider>
+        </TransactionContextProvider>
     )
 }
 
