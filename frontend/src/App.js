@@ -32,6 +32,8 @@ function AppContent() {
   )
 }
 
+/*Hello, Jeron*/
+
 function App() {
   return (
     <AuthContextProvider>
