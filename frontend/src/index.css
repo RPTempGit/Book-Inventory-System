@@ -19,7 +19,7 @@ body {
 
 /* Header/Navbar */
 header {
-  background: #fff;
+  background: #A1FF00; /* updated */
 }
 header .container {
   max-width: 1400px;
@@ -36,18 +36,24 @@ nav {
 nav a,
 nav button {
   margin-left: 10px;
+  text-decoration: none;
 }
+
+/* Navbar button styling */
 nav button {
-  background: #fff;
-  color: var(--primary);
-  border: 2px solid var(--primary);
+  background: #F600FF; /* default magenta */
+  color: #fff;
+  border: 0;
   padding: 6px 10px;
-  border-radius: 4px;
+  border-radius: 20px; /* updated */
   cursor: pointer;
   font-family: "Poppins";
   font-size: 1em;
 }
 
+/* Remove active page styling completely */
+
+/* Form elements */
 label,
 input,
 select,
@@ -55,8 +61,8 @@ button {
   display: block;
   width: 100%;
 }
-input,
-select {
+
+input {
   padding: 10px;
   margin-top: 10px;
   margin-bottom: 20px;
@@ -64,17 +70,49 @@ select {
   border-radius: 4px;
   box-sizing: border-box;
 }
+
+/* Style select as button */
+select {
+  appearance: none; /* remove default arrow */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background: #F600FF;
+  color: #fff;
+  border: 0;
+  padding: 10px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-family: "Poppins";
+  font-size: 1em;
+  width: 100%;
+  box-sizing: border-box;
+}
+
 button {
   background: var(--primary);
   border: 0;
   color: #fff;
   padding: 10px;
-  border-radius: 4px;
+  border-radius: 20px; /* updated */
   cursor: pointer;
 }
+
+/* Login button with darker green */
+form.login button {
+  background: #1A8C50; /* darker green */
+  color: #fff;
+  border-radius: 20px;
+  padding: 10px;
+  border: 0;
+  cursor: pointer;
+  font-family: "Poppins";
+  font-size: 1em;
+}
+
 input.error {
   border: 1px solid var(--error);
 }
+
 div.error {
   padding: 10px;
   background: #ffefef;
@@ -90,7 +128,9 @@ div.error {
   gap: 30px;
 }
 
-.transaction-details {
+.transaction-details,
+.stocktake-details,
+.report-card {
   background: #fff;
   border-radius: 4px;
   padding: 20px;
@@ -106,4 +146,10 @@ form.login {
   padding: 20px;
   background: #fff;
   border-radius: 4px;
+}
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
 }
