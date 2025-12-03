@@ -7,29 +7,15 @@ const TransactionForm = ({ editingTransaction, setEditingTransaction }) => {
   const { user } = useAuthContext();
 
   const [type, setType] = useState("inbound");
-  const [itemId, setItemId] = useState(""); // store selected item id
+  const [item_name, setItemName] = useState("");
   const [qty, setQty] = useState("");
   const [notes, setNotes] = useState("");
-  const [items, setItems] = useState([]); // fetched items
   const [error, setError] = useState(null);
 
-  // Fetch items for dropdown
-  useEffect(() => {
-    const fetchItems = async () => {
-      const res = await fetch(`${process.env.REACT_APP_API_URL}/api/items`, {
-        headers: { Authorization: `Bearer ${user.token}` },
-      });
-      const data = await res.json();
-      if (res.ok) setItems(data);
-    };
-    if (user) fetchItems();
-  }, [user]);
-
-  // Populate form when editing
   useEffect(() => {
     if (editingTransaction) {
       setType(editingTransaction.type);
-      setItemId(editingTransaction.item_id?._id || "");
+      setItemName(editingTransaction.item_name);
       setQty(editingTransaction.qty);
       setNotes(editingTransaction.notes);
     }
@@ -38,11 +24,10 @@ const TransactionForm = ({ editingTransaction, setEditingTransaction }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!user) return setError("You must be logged in");
-    if (!itemId || !type || !qty) return setError("Type, item, and quantity are required");
 
-    const transactionData = { type, item_id: itemId, qty, notes };
+    const transactionData = { type, item_name, qty, notes };
 
-    const url = editingTransaction
+    const url = editingTransaction 
       ? `${process.env.REACT_APP_API_URL}/api/transactions/${editingTransaction._id}`
       : `${process.env.REACT_APP_API_URL}/api/transactions`;
 
@@ -61,13 +46,12 @@ const TransactionForm = ({ editingTransaction, setEditingTransaction }) => {
 
     if (!res.ok) setError(json.error);
     if (res.ok) {
-      dispatch({
-        type: editingTransaction ? "UPDATE_TRANSACTION" : "CREATE_TRANSACTION",
-        payload: json,
+      dispatch({ 
+        type: editingTransaction ? "UPDATE_TRANSACTION" : "CREATE_TRANSACTION", 
+        payload: json 
       });
-
       setType("inbound");
-      setItemId("");
+      setItemName("");
       setQty("");
       setNotes("");
       setError(null);
@@ -87,14 +71,12 @@ const TransactionForm = ({ editingTransaction, setEditingTransaction }) => {
       </select>
 
       <label>Book Name:</label>
-      <select value={itemId} onChange={(e) => setItemId(e.target.value)} required>
-        <option value="">Select an item</option>
-        {items.map((item) => (
-          <option key={item._id} value={item._id}>
-            {item.item_name}
-          </option>
-        ))}
-      </select>
+      <input
+        type="text"
+        value={item_name}
+        onChange={(e) => setItemName(e.target.value)}
+        required
+      />
 
       <label>Quantity:</label>
       <input
@@ -105,11 +87,16 @@ const TransactionForm = ({ editingTransaction, setEditingTransaction }) => {
       />
 
       <label>Notes:</label>
-      <input type="text" value={notes} onChange={(e) => setNotes(e.target.value)} />
+      <input
+        type="text"
+        value={notes}
+        onChange={(e) => setNotes(e.target.value)}
+      />
 
       <button className="bg-green-500 text-white px-4 py-2 mt-2">
         {editingTransaction ? "Update" : "Save"}
       </button>
+
       {error && <div className="text-red-500 mt-2">{error}</div>}
     </form>
   );

@@ -7,23 +7,16 @@ const transactionSchema = new mongoose.Schema(
       enum: ["inbound", "outbound", "movement"],
       required: true,
     },
-    item_id: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Item",
+    item_name: { 
+      type: String,
       required: true,
     },
     qty: {
       type: Number,
       required: true,
     },
-    from_location: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Location",
-    },
-    to_location: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Location",
-    },
+    from_location: String,
+    to_location: String,
     date: {
       type: Date,
       default: Date.now,
