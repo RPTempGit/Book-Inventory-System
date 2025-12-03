@@ -7,7 +7,7 @@ const TransactionForm = ({ editingTransaction, setEditingTransaction }) => {
   const { user } = useAuthContext()
 
   const [type, setType] = useState("inbound")
-  const [name, setName] = useState("")
+  const [item_name, setItemName] = useState("")  
   const [qty, setQty] = useState("")
   const [notes, setNotes] = useState("")
   const [error, setError] = useState(null)
@@ -15,7 +15,7 @@ const TransactionForm = ({ editingTransaction, setEditingTransaction }) => {
   useEffect(() => {
     if (editingTransaction) {
       setType(editingTransaction.type)
-      setName(editingTransaction.name)
+      setItemName(editingTransaction.item_name)   
       setQty(editingTransaction.qty)
       setNotes(editingTransaction.notes)
     }
@@ -25,7 +25,7 @@ const TransactionForm = ({ editingTransaction, setEditingTransaction }) => {
     e.preventDefault()
     if (!user) return setError("You must be logged in")
 
-    const transactionData = { type, name, qty, notes }
+    const transactionData = { type, item_name, qty, notes }  
 
     const url = editingTransaction 
       ? `${process.env.REACT_APP_API_URL}/api/transactions/${editingTransaction._id}`
@@ -51,7 +51,7 @@ const TransactionForm = ({ editingTransaction, setEditingTransaction }) => {
         payload: json 
       })
       setType("inbound")
-      setName("")
+      setItemName("")   
       setQty("")
       setNotes("")
       setError(null)
@@ -70,8 +70,8 @@ const TransactionForm = ({ editingTransaction, setEditingTransaction }) => {
         <option value="movement">Movement</option>
       </select>
 
-      <label>Name:</label>
-      <input type="text" value={name} onChange={(e) => setName(e.target.value)} required />
+      <label>Item Name:</label>   {/* changed label */}
+      <input type="text" value={item_name} onChange={(e) => setItemName(e.target.value)} required />
 
       <label>Quantity:</label>
       <input type="number" value={qty} onChange={(e) => setQty(e.target.value)} required />
