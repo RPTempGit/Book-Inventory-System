@@ -1,3 +1,5 @@
+const mongoose = require("mongoose");
+
 const transactionSchema = new mongoose.Schema(
   {
     type: {
@@ -5,7 +7,7 @@ const transactionSchema = new mongoose.Schema(
       enum: ["inbound", "outbound", "movement"],
       required: true,
     },
-    item_name: {      
+    item_name: {
       type: String,
       required: true,
     },
@@ -14,12 +16,10 @@ const transactionSchema = new mongoose.Schema(
       required: true,
     },
     from_location: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Location",
+      type: String, 
     },
     to_location: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Location",
+      type: String,
     },
     date: {
       type: Date,
@@ -30,7 +30,9 @@ const transactionSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
-    notes: String,
+    notes: {
+      type: String, 
+    },
   },
   { timestamps: true }
 );

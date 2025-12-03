@@ -23,7 +23,7 @@ const TransactionDetails = ({ transaction }) => {
       <p>Book Name: {transaction.item_name}</p>
       <p>Quantity: {transaction.qty}</p>
       <p>Date: {new Date(transaction.date).toLocaleDateString()}</p>
-      <p>Notes: {transaction.notes}</p>
+      <p>Notes: {transaction.notes || "-"}</p>
       <span
         onClick={handleClick}
         className="absolute top-2 right-3 cursor-pointer text-red-500"
