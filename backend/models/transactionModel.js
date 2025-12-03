@@ -1,5 +1,3 @@
-const mongoose = require("mongoose");
-
 const transactionSchema = new mongoose.Schema(
   {
     type: {
@@ -7,7 +5,7 @@ const transactionSchema = new mongoose.Schema(
       enum: ["inbound", "outbound", "movement"],
       required: true,
     },
-    item_name: { 
+    item_name: {      
       type: String,
       required: true,
     },
@@ -15,8 +13,14 @@ const transactionSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
-    from_location: String,
-    to_location: String,
+    from_location: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Location",
+    },
+    to_location: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Location",
+    },
     date: {
       type: Date,
       default: Date.now,
