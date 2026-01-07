@@ -1,6 +1,6 @@
 const express = require("express")
 const { 
-    addStockTake, 
+    createStockTake,  // <-- correct function name
     getStockTakes 
 } = require("../controllers/stockTakeController")
 const requireAuth = require("../middleware/requireAuth")
@@ -8,6 +8,5 @@ const requireAuth = require("../middleware/requireAuth")
 const router = express.Router()
 router.use(requireAuth)
 router.get("/", getStockTakes)
-router.post("/", addStockTake)
-
+router.post("/", createStockTake)  // <-- fixed
 module.exports = router
