@@ -1,13 +1,11 @@
-const express = require("express")
-const { 
-    addStockTake, 
-    getStockTakes 
-} = require("../controllers/stockTakeController")
-const requireAuth = require("../middleware/requireAuth")
 
-const router = express.Router()
-router.use(requireAuth)
-router.get("/", getStockTakes)
-router.post("/", addStockTake)
+import express from "express";
+import { addStockTake, getStockTakes } from "../controllers/stockTakeController.js";
+import requireAuth from "../middleware/requireAuth.js";
 
-module.exports = router
+const router = express.Router();
+router.use(requireAuth);
+router.get("/", getStockTakes);
+router.post("/", addStockTake);
+
+export default router;

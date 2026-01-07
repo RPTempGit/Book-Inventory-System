@@ -1,4 +1,5 @@
-const mongoose = require("mongoose");
+
+import mongoose from "mongoose";
 
 const itemSchema = new mongoose.Schema({
   item_id: { type: Number, unique: true },
@@ -21,4 +22,5 @@ itemSchema.pre("save", async function(next) {
   next();
 });
 
-module.exports = mongoose.model("Item", itemSchema);
+
+export default mongoose.model("Item", itemSchema);

@@ -2,7 +2,7 @@ import TransactionForm from "../components/TransactionForm"
 
 const TransactionPage = () => {
   return (
-    <div>
+    <div className="form-container">
       <TransactionForm />
     </div>
   )

@@ -1,4 +1,5 @@
-const StockTake = require("../models/stockTakeModel")
+
+import StockTake from "../models/stockTakeModel.js";
 
 const addStockTake = async (req, res) => {
     const { item_id, location_id, counted_qty } = req.body
@@ -15,4 +16,5 @@ const getStockTakes = async (req, res) => {
     res.status(200).json(records)
 }
 
-module.exports = { addStockTake, getStockTakes }
+
+export { addStockTake, getStockTakes };

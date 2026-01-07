@@ -1,5 +1,6 @@
-const Transaction = require("../models/transactionModel")
-const { v4: uuidv4 } = require("uuid") 
+
+import Transaction from "../models/transactionModel.js";
+import { v4 as uuidv4 } from "uuid";
 
 const getTransactions = async (req, res) => {
   const user_id = req.user._id
@@ -52,8 +53,5 @@ const deleteTransaction = async (req, res) => {
   }
 }
 
-module.exports = {
-  getTransactions,
-  createTransaction,
-  deleteTransaction
-}
+
+export { getTransactions, createTransaction, deleteTransaction };

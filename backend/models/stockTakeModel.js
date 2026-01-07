@@ -1,4 +1,5 @@
-const mongoose = require("mongoose")
+
+import mongoose from "mongoose";
 const stockTakeSchema = new mongoose.Schema({
     item_id: { 
         type: mongoose.Schema.Types.ObjectId, 
@@ -24,4 +25,5 @@ const stockTakeSchema = new mongoose.Schema({
     }
 })
 
-module.exports = mongoose.model("StockTake", stockTakeSchema)
+
+export default mongoose.model("StockTake", stockTakeSchema);

@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react"
 import { useAuthContext } from "../hooks/useAuthContext"
 
-const Reports = () => {
+
+const Reports = ({ viewOnly }) => {
     const { user } = useAuthContext()
     const [transactions, setTransactions] = useState([])
 
@@ -32,7 +33,9 @@ const Reports = () => {
     return (
         <div className="bg-white p-4 rounded shadow">
             <h3 className="font-semibold text-emerald-600 mb-3">Reports</h3>
-            <button onClick={downloadCSV} className="bg-emerald-500 text-white px-3 py-1 rounded mb-3">Download CSV</button>
+            {!viewOnly && (
+                <button onClick={downloadCSV} className="bg-emerald-500 text-white px-3 py-1 rounded mb-3">Download CSV</button>
+            )}
             <table className="w-full text-sm">
                 <thead>
                     <tr className="bg-gray-100">
