@@ -1,6 +1,5 @@
 const StockTake = require("../models/stockTakeModel");
 
-// Get stock takes
 const getStockTakes = async (req, res) => {
   const user_id = req.user._id;
   try {
@@ -11,7 +10,6 @@ const getStockTakes = async (req, res) => {
   }
 };
 
-// Create stock take
 const createStockTake = async (req, res) => {
   const { item_name, qty, location, notes } = req.body;
   const user_id = req.user._id;
@@ -35,7 +33,6 @@ const createStockTake = async (req, res) => {
   }
 };
 
-// Delete stock take
 const deleteStockTake = async (req, res) => {
   const { id } = req.params;
   const user_id = req.user._id;
