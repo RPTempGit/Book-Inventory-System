@@ -46,4 +46,28 @@ const deleteStockTake = async (req, res) => {
   }
 };
 
-module.exports = { getStockTakes, createStockTake, deleteStockTake };
+const updateStockTake = async (req, res) => {
+  const { id } = req.params;
+  const user_id = req.user._id;
+  const { item_name, qty, location, notes } = req.body;
+
+  if (!item_name || !qty) {
+    return res.status(400).json({ error: "Book name and quantity are required" });
+  }
+
+  try {
+    const stockTake = await StockTake.findOneAndUpdate(
+      { _id: id, user_id },
+      { item_name, qty, location: location || "", notes: notes || "" },
+      { new: true } // return the updated document
+    );
+
+    if (!stockTake) return res.status(404).json({ error: "Stock take not found" });
+
+    res.status(200).json(stockTake);
+  } catch (error) {
+    res.status(400).json({ error: "Failed to update stock take" });
+  }
+};
+
+module.exports = { getStockTakes, createStockTake, updateStockTake, deleteStockTake };
