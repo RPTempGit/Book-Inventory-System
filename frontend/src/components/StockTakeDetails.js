@@ -8,14 +8,22 @@ const StockTakeDetails = ({ stockTake, setEditingStockTake }) => {
   const handleDelete = async () => {
     if (!user) return;
 
-    const res = await fetch(`${process.env.REACT_APP_API_URL}/api/stocktake/${stockTake._id}`, {
-      method: "DELETE",
-      headers: { Authorization: `Bearer ${user.token}` },
-    });
+    try {
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/api/stocktake/${stockTake._id}`, {
+        method: "DELETE",
+        headers: {
+          "Authorization": `Bearer ${user.token}`,
+          "Content-Type": "application/json",
+        },
+      });
 
-    const json = await res.json();
-    if (res.ok) {
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error || "Failed to delete");
+
+      // update context
       dispatch({ type: "DELETE_STOCKTAKE", payload: json });
+    } catch (err) {
+      console.error("Delete failed:", err.message);
     }
   };
 

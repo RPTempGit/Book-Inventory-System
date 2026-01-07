@@ -26,25 +26,51 @@ const StockTakeForm = ({ editingStockTake, setEditingStockTake }) => {
     if (!user) return setError("You must be logged in");
 
     const stockTakeData = { item_name, qty, location, notes };
-    const res = await fetch(`${process.env.REACT_APP_API_URL}/api/stocktake`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${user.token}`,
-      },
-      body: JSON.stringify(stockTakeData),
-    });
-    const json = await res.json();
-    if (!res.ok) return setError(json.error);
 
-    dispatch({ type: "CREATE_STOCKTAKE", payload: json });
-    setItemName(""); setQty(""); setLocation(""); setNotes(""); setError(null);
-    if (editingStockTake) setEditingStockTake(null);
+    // determine method & URL for create or update
+    const url = editingStockTake
+      ? `${process.env.REACT_APP_API_URL}/api/stocktake/${editingStockTake._id}`
+      : `${process.env.REACT_APP_API_URL}/api/stocktake`;
+    const method = editingStockTake ? "PUT" : "POST";
+
+    try {
+      const res = await fetch(url, {
+        method,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${user.token}`,
+        },
+        body: JSON.stringify(stockTakeData),
+      });
+
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error || "Something went wrong");
+
+      if (editingStockTake) {
+        // update existing stock take in context
+        dispatch({ type: "UPDATE_STOCKTAKE", payload: json });
+        setEditingStockTake(null);
+      } else {
+        // add new stock take to context
+        dispatch({ type: "CREATE_STOCKTAKE", payload: json });
+      }
+
+      // reset form
+      setItemName("");
+      setQty("");
+      setLocation("");
+      setNotes("");
+      setError(null);
+    } catch (err) {
+      setError(err.message);
+    }
   };
 
   return (
     <form onSubmit={handleSubmit} className="p-4 bg-white rounded shadow mt-4">
-      <h3 className="font-semibold mb-2">{editingStockTake ? "Edit Stock Take" : "Add Stock Take"}</h3>
+      <h3 className="font-semibold mb-2">
+        {editingStockTake ? "Edit Stock Take" : "Add Stock Take"}
+      </h3>
 
       <label>Book Name:</label>
       <input value={item_name} onChange={(e) => setItemName(e.target.value)} required />
@@ -58,7 +84,10 @@ const StockTakeForm = ({ editingStockTake, setEditingStockTake }) => {
       <label>Notes:</label>
       <input value={notes} onChange={(e) => setNotes(e.target.value)} />
 
-      <button className="bg-green-500 text-white px-4 py-2 mt-2">Save</button>
+      <button className="bg-green-500 text-white px-4 py-2 mt-2">
+        {editingStockTake ? "Update" : "Save"}
+      </button>
+
       {error && <div className="text-red-500 mt-2">{error}</div>}
     </form>
   );
