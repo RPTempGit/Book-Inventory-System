@@ -27,7 +27,6 @@ const StockTakeForm = ({ editingStockTake, setEditingStockTake }) => {
 
     const stockTakeData = { item_name, qty, location, notes };
 
-    // determine method & URL for create or update
     const url = editingStockTake
       ? `${process.env.REACT_APP_API_URL}/api/stocktake/${editingStockTake._id}`
       : `${process.env.REACT_APP_API_URL}/api/stocktake`;
@@ -47,15 +46,12 @@ const StockTakeForm = ({ editingStockTake, setEditingStockTake }) => {
       if (!res.ok) throw new Error(json.error || "Something went wrong");
 
       if (editingStockTake) {
-        // update existing stock take in context
         dispatch({ type: "UPDATE_STOCKTAKE", payload: json });
         setEditingStockTake(null);
       } else {
-        // add new stock take to context
         dispatch({ type: "CREATE_STOCKTAKE", payload: json });
       }
 
-      // reset form
       setItemName("");
       setQty("");
       setLocation("");
