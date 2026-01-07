@@ -31,10 +31,8 @@ const TransactionForm = ({ editingTransaction, setEditingTransaction }) => {
       ? `${process.env.REACT_APP_API_URL}/api/transactions/${editingTransaction._id}`
       : `${process.env.REACT_APP_API_URL}/api/transactions`;
 
-    const method = editingTransaction ? "PUT" : "POST";
-
     const res = await fetch(url, {
-      method,
+      method: editingTransaction ? "PUT" : "POST",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${user.token}`,
@@ -43,20 +41,19 @@ const TransactionForm = ({ editingTransaction, setEditingTransaction }) => {
     });
 
     const json = await res.json();
+    if (!res.ok) return setError(json.error);
 
-    if (!res.ok) setError(json.error);
-    if (res.ok) {
-      dispatch({ 
-        type: editingTransaction ? "UPDATE_TRANSACTION" : "CREATE_TRANSACTION", 
-        payload: json 
-      });
-      setType("inbound");
-      setItemName("");
-      setQty("");
-      setNotes("");
-      setError(null);
-      if (editingTransaction) setEditingTransaction(null);
-    }
+    dispatch({ 
+      type: editingTransaction ? "UPDATE_TRANSACTION" : "CREATE_TRANSACTION", 
+      payload: json 
+    });
+
+    setType("inbound");
+    setItemName("");
+    setQty("");
+    setNotes("");
+    setError(null);
+    if (editingTransaction) setEditingTransaction(null);
   };
 
   return (

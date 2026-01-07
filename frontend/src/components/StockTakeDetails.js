@@ -8,13 +8,10 @@ const StockTakeDetails = ({ stockTake, setEditingStockTake }) => {
   const handleDelete = async () => {
     if (!user) return;
 
-    const res = await fetch(
-      `${process.env.REACT_APP_API_URL}/api/stocktake/${stockTake._id}`,
-      {
-        method: "DELETE",
-        headers: { Authorization: `Bearer ${user.token}` },
-      }
-    );
+    const res = await fetch(`${process.env.REACT_APP_API_URL}/api/stocktake/${stockTake._id}`, {
+      method: "DELETE",
+      headers: { Authorization: `Bearer ${user.token}` },
+    });
 
     const json = await res.json();
     if (res.ok) {
@@ -23,25 +20,29 @@ const StockTakeDetails = ({ stockTake, setEditingStockTake }) => {
   };
 
   return (
-    <div className="bg-white p-3 rounded shadow mb-2 relative">
-      <h4 className="font-semibold">{stockTake.item_name}</h4>
+    <div className="bg-white rounded p-3 shadow-sm mb-2 relative">
+      <h4 className="text-blue-600 font-semibold">Stock Take</h4>
+      <p>Book Name: {stockTake.item_name}</p>
       <p>Quantity: {stockTake.qty}</p>
-      <p>Location: {stockTake.location}</p>
-      <p>Notes: {stockTake.notes}</p>
+      <p>Location: {stockTake.location || "-"}</p>
+      <p>Notes: {stockTake.notes || "-"}</p>
 
-      <button
-        onClick={() => setEditingStockTake(stockTake)}
-        className="text-blue-500 mr-3"
-      >
-        Edit
-      </button>
-
-      <button
-        onClick={handleDelete}
-        className="text-red-500"
-      >
-        Delete
-      </button>
+      <div className="absolute top-2 right-3 flex gap-2">
+        <span
+          onClick={() => setEditingStockTake(stockTake)}
+          className="cursor-pointer text-green-500"
+          title="Edit"
+        >
+          ✎
+        </span>
+        <span
+          onClick={handleDelete}
+          className="cursor-pointer text-red-500"
+          title="Delete"
+        >
+          ✖
+        </span>
+      </div>
     </div>
   );
 };

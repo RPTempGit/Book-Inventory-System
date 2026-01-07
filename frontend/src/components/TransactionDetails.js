@@ -7,12 +7,10 @@ const TransactionDetails = ({ transaction }) => {
 
   const handleClick = async () => {
     if (!user) return;
-
     const res = await fetch(`${process.env.REACT_APP_API_URL}/api/transactions/${transaction._id}`, {
       method: "DELETE",
       headers: { Authorization: `Bearer ${user.token}` },
     });
-
     const json = await res.json();
     if (res.ok) dispatch({ type: "DELETE_TRANSACTION", payload: json });
   };
@@ -24,12 +22,7 @@ const TransactionDetails = ({ transaction }) => {
       <p>Quantity: {transaction.qty}</p>
       <p>Date: {new Date(transaction.date).toLocaleDateString()}</p>
       <p>Notes: {transaction.notes || "-"}</p>
-      <span
-        onClick={handleClick}
-        className="absolute top-2 right-3 cursor-pointer text-red-500"
-      >
-        ✖
-      </span>
+      <span onClick={handleClick} className="absolute top-2 right-3 cursor-pointer text-red-500">✖</span>
     </div>
   );
 };

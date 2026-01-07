@@ -1,8 +1,8 @@
 const StockTake = require("../models/stockTakeModel");
 
+// Get stock takes
 const getStockTakes = async (req, res) => {
   const user_id = req.user._id;
-
   try {
     const stockTakes = await StockTake.find({ user_id }).sort({ createdAt: -1 });
     res.status(200).json(stockTakes);
@@ -11,6 +11,7 @@ const getStockTakes = async (req, res) => {
   }
 };
 
+// Create stock take
 const createStockTake = async (req, res) => {
   const { item_name, qty, location, notes } = req.body;
   const user_id = req.user._id;
@@ -34,23 +35,18 @@ const createStockTake = async (req, res) => {
   }
 };
 
+// Delete stock take
 const deleteStockTake = async (req, res) => {
   const { id } = req.params;
   const user_id = req.user._id;
 
   try {
     const stockTake = await StockTake.findOneAndDelete({ _id: id, user_id });
-    if (!stockTake) {
-      return res.status(404).json({ error: "Stock take not found" });
-    }
+    if (!stockTake) return res.status(404).json({ error: "Stock take not found" });
     res.status(200).json(stockTake);
   } catch (error) {
     res.status(400).json({ error: "Failed to delete stock take" });
   }
 };
 
-module.exports = {
-  getStockTakes,
-  createStockTake,
-  deleteStockTake,
-};
+module.exports = { getStockTakes, createStockTake, deleteStockTake };
