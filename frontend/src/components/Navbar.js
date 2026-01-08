@@ -1,236 +1,147 @@
-import { NavLink, Link } from "react-router-dom"
-import { useLogout } from "../hooks/useLogout"
-import { useAuthContext } from "../hooks/useAuthContext"
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
+import './Navbar.css';
 
 const Navbar = () => {
-    const { logout } = useLogout()
-    const { user } = useAuthContext()
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [activeDropdown, setActiveDropdown] = useState(null);
 
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen);
+  };
 
-    const handleClick = () => {
-        logout()
-    }
+  const toggleDropdown = (dropdown) => {
+    setActiveDropdown(activeDropdown === dropdown ? null : dropdown);
+  };
 
-    return (
-        <header style={{ background: "var(--primary)", boxShadow: "var(--card-shadow)" }}>
-            <div style={{ maxWidth: 1400, margin: 0, padding: "0 0 0 0", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                <div style={{ display: "flex", alignItems: "center" }}>
-                    <Link to="/" style={{ textDecoration: "none", marginLeft: 24 }}>
-                        <h1 style={{ color: "#fff", fontWeight: 700, fontSize: 28, margin: "16px 32px 16px 0" }}>Book Inventory</h1>
-                    </Link>
-                    <nav style={{ display: "flex", alignItems: "center", gap: 0, marginLeft: 0 }}>
-                        {user && (
-                            <>
-                                <NavLink
-                                    to="/"
-                                    end
-                                    style={({ isActive }) => ({
-                                        background: isActive ? "#fff" : "transparent",
-                                        color: isActive ? "var(--primary)" : "#fff",
-                                        fontWeight: 600,
-                                        padding: "8px 18px",
-                                        borderRadius: "var(--border-radius)",
-                                        marginLeft: 0,
-                                        marginRight: 8,
-                                        textDecoration: "none",
-                                        boxShadow: isActive ? "0 2px 8px rgba(40,54,80,0.08)" : "none",
-                                        border: isActive ? "2px solid #fff" : "2px solid transparent",
-                                        transition: "all 0.2s"
-                                    })}
-                                    onMouseOver={e => {
-                                        if (!e.target.style.background || e.target.style.background === "transparent") {
-                                            e.target.style.background = "rgba(255,255,255,0.18)";
-                                        }
-                                    }}
-                                    onMouseOut={e => {
-                                        if (!e.target.className.includes('active')) {
-                                            e.target.style.background = "transparent";
-                                        }
-                                    }}
-                                >
-                                    Dashboard
-                                </NavLink>
-                                <NavLink
-                                    to="/transaction"
-                                    style={({ isActive }) => ({
-                                        background: isActive ? "#fff" : "transparent",
-                                        color: isActive ? "var(--primary)" : "#fff",
-                                        fontWeight: 600,
-                                        padding: "8px 18px",
-                                        borderRadius: "var(--border-radius)",
-                                        marginLeft: 0,
-                                        marginRight: 8,
-                                        textDecoration: "none",
-                                        boxShadow: isActive ? "0 2px 8px rgba(40,54,80,0.08)" : "none",
-                                        border: isActive ? "2px solid #fff" : "2px solid transparent",
-                                        transition: "all 0.2s"
-                                    })}
-                                    onMouseOver={e => {
-                                        if (!e.target.style.background || e.target.style.background === "transparent") {
-                                            e.target.style.background = "rgba(255,255,255,0.18)";
-                                        }
-                                    }}
-                                    onMouseOut={e => {
-                                        if (!e.target.className.includes('active')) {
-                                            e.target.style.background = "transparent";
-                                        }
-                                    }}
-                                >
-                                    Transaction
-                                </NavLink>
-                                <NavLink
-                                    to="/stocktake"
-                                    style={({ isActive }) => ({
-                                        background: isActive ? "#fff" : "transparent",
-                                        color: isActive ? "var(--primary)" : "#fff",
-                                        fontWeight: 600,
-                                        padding: "8px 18px",
-                                        borderRadius: "var(--border-radius)",
-                                        marginLeft: 0,
-                                        marginRight: 8,
-                                        textDecoration: "none",
-                                        boxShadow: isActive ? "0 2px 8px rgba(40,54,80,0.08)" : "none",
-                                        border: isActive ? "2px solid #fff" : "2px solid transparent",
-                                        transition: "all 0.2s",
-                                        opacity: user.role === 'admin' ? 1 : 0.7,
-                                        pointerEvents: user.role === 'admin' ? 'auto' : 'auto',
-                                    })}
-                                    onMouseOver={e => {
-                                        if (!e.target.style.background || e.target.style.background === "transparent") {
-                                            e.target.style.background = "rgba(255,255,255,0.18)";
-                                        }
-                                    }}
-                                    onMouseOut={e => {
-                                        if (!e.target.className.includes('active')) {
-                                            e.target.style.background = "transparent";
-                                        }
-                                    }}
-                                >
-                                    Stock Take{user.role !== 'admin' && <span style={{ fontSize: 12, marginLeft: 4 }}>(View Only)</span>}
-                                </NavLink>
-                                <NavLink
-                                    to="/reports"
-                                    style={({ isActive }) => ({
-                                        background: isActive ? "#fff" : "transparent",
-                                        color: isActive ? "var(--primary)" : "#fff",
-                                        fontWeight: 600,
-                                        padding: "8px 18px",
-                                        borderRadius: "var(--border-radius)",
-                                        marginLeft: 0,
-                                        marginRight: 8,
-                                        textDecoration: "none",
-                                        boxShadow: isActive ? "0 2px 8px rgba(40,54,80,0.08)" : "none",
-                                        border: isActive ? "2px solid #fff" : "2px solid transparent",
-                                        transition: "all 0.2s",
-                                        opacity: user.role === 'admin' ? 1 : 0.7,
-                                        pointerEvents: user.role === 'admin' ? 'auto' : 'auto',
-                                    })}
-                                    onMouseOver={e => {
-                                        if (!e.target.style.background || e.target.style.background === "transparent") {
-                                            e.target.style.background = "rgba(255,255,255,0.18)";
-                                        }
-                                    }}
-                                    onMouseOut={e => {
-                                        if (!e.target.className.includes('active')) {
-                                            e.target.style.background = "transparent";
-                                        }
-                                    }}
-                                >
-                                    Reports{user.role !== 'admin' && <span style={{ fontSize: 12, marginLeft: 4 }}>(View Only)</span>}
-                                </NavLink>
-                            </>
-                        )}
-                    </nav>
-                </div>
-                {user ? (
-                    <div style={{ display: "flex", alignItems: "center" }}>
-                        <span style={{ color: "#e0e0e0", marginRight: 18 }}>{user.email} ({user.role})</span>
-                        <button onClick={handleClick} style={{
-                            background: "#fff",
-                            color: "var(--primary)",
-                            border: "2px solid #fff",
-                            padding: "8px 18px",
-                            borderRadius: "var(--border-radius)",
-                            fontWeight: 600,
-                            marginLeft: 0,
-                            marginRight: 8,
-                            cursor: "pointer",
-                            boxShadow: "0 2px 8px rgba(40,54,80,0.08)",
-                            transition: "background 0.2s, color 0.2s"
-                        }}
-                            onMouseOver={e => { e.target.style.background = "var(--primary-dark)"; e.target.style.color = "#fff"; }}
-                            onMouseOut={e => { e.target.style.background = "#fff"; e.target.style.color = "var(--primary)"; }}
-                        >
-                            Log out
-                        </button>
-                    </div>
-                ) : null}
-            </div>
-        </header>
-                    {!user && (
-                        <>
-                            <NavLink
-                                to="/login"
-                                style={({ isActive }) => ({
-                                    background: isActive ? "#fff" : "transparent",
-                                    color: isActive ? "var(--primary)" : "#fff",
-                                    fontWeight: 600,
-                                    padding: "8px 18px",
-                                    borderRadius: "var(--border-radius)",
-                                    marginLeft: 0,
-                                    marginRight: 8,
-                                    textDecoration: "none",
-                                    boxShadow: isActive ? "0 2px 8px rgba(40,54,80,0.08)" : "none",
-                                    border: isActive ? "2px solid #fff" : "2px solid transparent",
-                                    transition: "all 0.2s"
-                                })}
-                                onMouseOver={e => {
-                                    if (!e.target.style.background || e.target.style.background === "transparent") {
-                                        e.target.style.background = "rgba(255,255,255,0.18)";
-                                    }
-                                }}
-                                onMouseOut={e => {
-                                    if (!e.target.className.includes('active')) {
-                                        e.target.style.background = "transparent";
-                                    }
-                                }}
-                            >
-                                Login
-                            </NavLink>
-                            <NavLink
-                                to="/signup"
-                                style={({ isActive }) => ({
-                                    background: isActive ? "#fff" : "transparent",
-                                    color: isActive ? "var(--primary)" : "#fff",
-                                    fontWeight: 600,
-                                    padding: "8px 18px",
-                                    borderRadius: "var(--border-radius)",
-                                    marginLeft: 0,
-                                    marginRight: 8,
-                                    textDecoration: "none",
-                                    boxShadow: isActive ? "0 2px 8px rgba(40,54,80,0.08)" : "none",
-                                    border: isActive ? "2px solid #fff" : "2px solid transparent",
-                                    transition: "all 0.2s"
-                                })}
-                                onMouseOver={e => {
-                                    if (!e.target.style.background || e.target.style.background === "transparent") {
-                                        e.target.style.background = "rgba(255,255,255,0.18)";
-                                    }
-                                }}
-                                onMouseOut={e => {
-                                    if (!e.target.className.includes('active')) {
-                                        e.target.style.background = "transparent";
-                                    }
-                                }}
-                            >
-                                Signup
-                            </NavLink>
-                        </>
-                    )}
-                </nav>
-            </div>
-        </header>
-    )
-}
+  const closeMenu = () => {
+    setIsMenuOpen(false);
+    setActiveDropdown(null);
+  };
 
-export default Navbar
+  return (
+    <nav className="navbar">
+      <div className="navbar-container">
+        {/* Logo Section */}
+        <Link to="/" className="navbar-logo" onClick={closeMenu}>
+          <img src="/logo.png" alt="Book Inventory Logo" className="logo-image" />
+          <span className="logo-text">BookHub</span>
+        </Link>
+
+        {/* Mobile Menu Toggle */}
+        <button 
+          className={`hamburger ${isMenuOpen ? 'active' : ''}`}
+          onClick={toggleMenu}
+          aria-label="Toggle navigation menu"
+          aria-expanded={isMenuOpen}
+        >
+          <span className="hamburger-line"></span>
+          <span className="hamburger-line"></span>
+          <span className="hamburger-line"></span>
+        </button>
+
+        {/* Navigation Menu */}
+        <ul className={`nav-menu ${isMenuOpen ? 'active' : ''}`}>
+          {/* Home Link */}
+          <li className="nav-item">
+            <Link to="/" className="nav-link" onClick={closeMenu}>
+              Home
+            </Link>
+          </li>
+
+          {/* Books Dropdown */}
+          <li className={`nav-item dropdown ${activeDropdown === 'books' ? 'active' : ''}`}>
+            <button 
+              className="nav-link dropdown-toggle"
+              onClick={() => toggleDropdown('books')}
+              aria-haspopup="true"
+              aria-expanded={activeDropdown === 'books'}
+            >
+              Books
+              <span className="dropdown-arrow">▼</span>
+            </button>
+            <ul className="dropdown-menu">
+              <li><Link to="/books" className="dropdown-link" onClick={closeMenu}>All Books</Link></li>
+              <li><Link to="/books/add" className="dropdown-link" onClick={closeMenu}>Add Book</Link></li>
+              <li><Link to="/books/categories" className="dropdown-link" onClick={closeMenu}>Categories</Link></li>
+              <li><Link to="/books/authors" className="dropdown-link" onClick={closeMenu}>Authors</Link></li>
+            </ul>
+          </li>
+
+          {/* Inventory Dropdown */}
+          <li className={`nav-item dropdown ${activeDropdown === 'inventory' ? 'active' : ''}`}>
+            <button 
+              className="nav-link dropdown-toggle"
+              onClick={() => toggleDropdown('inventory')}
+              aria-haspopup="true"
+              aria-expanded={activeDropdown === 'inventory'}
+            >
+              Inventory
+              <span className="dropdown-arrow">▼</span>
+            </button>
+            <ul className="dropdown-menu">
+              <li><Link to="/inventory" className="dropdown-link" onClick={closeMenu}>Dashboard</Link></li>
+              <li><Link to="/inventory/stock" className="dropdown-link" onClick={closeMenu}>Stock Levels</Link></li>
+              <li><Link to="/inventory/transactions" className="dropdown-link" onClick={closeMenu}>Transactions</Link></li>
+              <li><Link to="/inventory/reports" className="dropdown-link" onClick={closeMenu}>Reports</Link></li>
+            </ul>
+          </li>
+
+          {/* Management Dropdown */}
+          <li className={`nav-item dropdown ${activeDropdown === 'management' ? 'active' : ''}`}>
+            <button 
+              className="nav-link dropdown-toggle"
+              onClick={() => toggleDropdown('management')}
+              aria-haspopup="true"
+              aria-expanded={activeDropdown === 'management'}
+            >
+              Management
+              <span className="dropdown-arrow">▼</span>
+            </button>
+            <ul className="dropdown-menu">
+              <li><Link to="/management/users" className="dropdown-link" onClick={closeMenu}>Users</Link></li>
+              <li><Link to="/management/settings" className="dropdown-link" onClick={closeMenu}>Settings</Link></li>
+              <li><Link to="/management/roles" className="dropdown-link" onClick={closeMenu}>Roles & Permissions</Link></li>
+            </ul>
+          </li>
+
+          {/* About Link */}
+          <li className="nav-item">
+            <Link to="/about" className="nav-link" onClick={closeMenu}>
+              About
+            </Link>
+          </li>
+
+          {/* Contact Link */}
+          <li className="nav-item">
+            <Link to="/contact" className="nav-link" onClick={closeMenu}>
+              Contact
+            </Link>
+          </li>
+
+          {/* User Profile Dropdown */}
+          <li className={`nav-item dropdown ${activeDropdown === 'profile' ? 'active' : ''}`}>
+            <button 
+              className="nav-link dropdown-toggle profile-toggle"
+              onClick={() => toggleDropdown('profile')}
+              aria-haspopup="true"
+              aria-expanded={activeDropdown === 'profile'}
+            >
+              <span className="profile-icon">👤</span>
+              <span className="profile-text">Profile</span>
+              <span className="dropdown-arrow">▼</span>
+            </button>
+            <ul className="dropdown-menu profile-menu">
+              <li><Link to="/profile" className="dropdown-link" onClick={closeMenu}>My Profile</Link></li>
+              <li><Link to="/settings/account" className="dropdown-link" onClick={closeMenu}>Account Settings</Link></li>
+              <li><hr className="dropdown-divider" /></li>
+              <li><Link to="/logout" className="dropdown-link logout" onClick={closeMenu}>Logout</Link></li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </nav>
+  );
+};
+
+export default Navbar;
