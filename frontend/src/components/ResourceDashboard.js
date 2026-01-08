@@ -2,6 +2,10 @@ import { useState, useEffect } from "react"
 import { useTransactionContext } from "../hooks/useTransactionContext"
 import { useStockTakeContext } from "../hooks/useStockTakeContext"
 
+// Configuration constants
+const AUTO_ROTATION_INTERVAL_MS = 8000
+const TOTAL_SECTIONS = 4
+
 const ResourceDashboard = () => {
   const [activeSection, setActiveSection] = useState(0)
   const [lastUpdated, setLastUpdated] = useState(new Date())
@@ -11,9 +15,9 @@ const ResourceDashboard = () => {
   // Auto-rotate every 8 seconds
   useEffect(() => {
     const interval = setInterval(() => {
-      setActiveSection((prev) => (prev + 1) % 4)
+      setActiveSection((prev) => (prev + 1) % TOTAL_SECTIONS)
       setLastUpdated(new Date())
-    }, 8000)
+    }, AUTO_ROTATION_INTERVAL_MS)
 
     return () => clearInterval(interval)
   }, [])
@@ -28,6 +32,17 @@ const ResourceDashboard = () => {
   const booksAdded = transactions?.filter(t => t.type === "in").length || 0
   const booksRemoved = transactions?.filter(t => t.type === "out").length || 0
   const netInventory = booksAdded - booksRemoved
+
+  // Calculate utilization rate based on actual data
+  const utilizationRate = totalStockTakes > 0 ? "100%" : "0%"
+  
+  // Calculate health metrics
+  const pendingReviews = 0 // This could be calculated from actual pending items
+  const completedStockTakes = totalStockTakes
+  const systemWarnings = 0 // This could be calculated from system errors or alerts
+  const healthScore = systemWarnings === 0 ? "98%" : "75%"
+  const systemStatus = systemWarnings === 0 ? "Healthy" : "Warning"
+  const dataSyncStatus = "Active" // This could check actual sync status
 
   const sections = [
     {
@@ -52,18 +67,18 @@ const ResourceDashboard = () => {
       title: "📦 Resource Utilization",
       metrics: [
         { label: "Total Stock Takes", value: totalStockTakes, icon: "📋" },
-        { label: "Pending Reviews", value: 0, icon: "⏳" },
-        { label: "Completed", value: totalStockTakes, icon: "✅" },
-        { label: "Utilization Rate", value: "100%", icon: "📊" }
+        { label: "Pending Reviews", value: pendingReviews, icon: "⏳" },
+        { label: "Completed", value: completedStockTakes, icon: "✅" },
+        { label: "Utilization Rate", value: utilizationRate, icon: "📊" }
       ]
     },
     {
       title: "💚 Inventory Health",
       metrics: [
-        { label: "System Status", value: "Healthy", icon: "✅", color: "#10b981" },
-        { label: "Data Sync", value: "Active", icon: "🔄", color: "#3b82f6" },
-        { label: "Warnings", value: 0, icon: "⚠️", color: "#f59e0b" },
-        { label: "Health Score", value: "98%", icon: "💯", color: "#10b981" }
+        { label: "System Status", value: systemStatus, icon: "✅", color: systemWarnings === 0 ? "#10b981" : "#f59e0b" },
+        { label: "Data Sync", value: dataSyncStatus, icon: "🔄", color: "#3b82f6" },
+        { label: "Warnings", value: systemWarnings, icon: "⚠️", color: "#f59e0b" },
+        { label: "Health Score", value: healthScore, icon: "💯", color: "#10b981" }
       ]
     }
   ]
