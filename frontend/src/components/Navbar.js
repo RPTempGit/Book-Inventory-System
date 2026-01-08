@@ -1,223 +1,125 @@
+import { useState } from "react"
 import { NavLink, Link } from "react-router-dom"
 import { useLogout } from "../hooks/useLogout"
 import { useAuthContext } from "../hooks/useAuthContext"
+import "./Navbar.css"
 
 const Navbar = () => {
-    const { logout } = useLogout()
-    const { user } = useAuthContext()
+  const { logout } = useLogout()
+  const { user } = useAuthContext()
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [dropdownOpen, setDropdownOpen] = useState(false)
 
+  const handleLogout = () => {
+    logout()
+    setDropdownOpen(false)
+  }
 
-    const handleClick = () => {
-        logout()
-    }
+  const toggleMobileMenu = () => {
+    setMobileMenuOpen(!mobileMenuOpen)
+  }
 
-    return (
-        <header style={{ background: "var(--primary)", boxShadow: "var(--card-shadow)" }}>
-            <div style={{ maxWidth: 1400, margin: 0, padding: "0 0 0 0", display: "flex", alignItems: "center", justifyContent: "flex-start" }}>
-                <Link to="/" style={{ textDecoration: "none", marginLeft: 24 }}>
-                    <h1 style={{ color: "#fff", fontWeight: 700, fontSize: 28, margin: "16px 32px 16px 0" }}>Book Inventory</h1>
-                </Link>
-                <nav style={{ display: "flex", alignItems: "center", gap: 0, marginLeft: 0 }}>
-                    {user && (
-                        <>
-                            <span style={{ color: "#e0e0e0", marginRight: 18, marginLeft: 0 }}>{user.email} ({user.role})</span>
-                            <NavLink
-                                to="/"
-                                end
-                                style={({ isActive }) => ({
-                                    background: isActive ? "#fff" : "transparent",
-                                    color: isActive ? "var(--primary)" : "#fff",
-                                    fontWeight: 600,
-                                    padding: "8px 18px",
-                                    borderRadius: "var(--border-radius)",
-                                    marginLeft: 0,
-                                    marginRight: 8,
-                                    textDecoration: "none",
-                                    boxShadow: isActive ? "0 2px 8px rgba(40,54,80,0.08)" : "none",
-                                    border: isActive ? "2px solid #fff" : "2px solid transparent",
-                                    transition: "all 0.2s"
-                                })}
-                                onMouseOver={e => {
-                                    if (!e.target.style.background || e.target.style.background === "transparent") {
-                                        e.target.style.background = "rgba(255,255,255,0.18)";
-                                    }
-                                }}
-                                onMouseOut={e => {
-                                    if (!e.target.className.includes('active')) {
-                                        e.target.style.background = "transparent";
-                                    }
-                                }}
-                            >
-                                Dashboard
-                            </NavLink>
-                            <NavLink
-                                to="/transaction"
-                                style={({ isActive }) => ({
-                                    background: isActive ? "#fff" : "transparent",
-                                    color: isActive ? "var(--primary)" : "#fff",
-                                    fontWeight: 600,
-                                    padding: "8px 18px",
-                                    borderRadius: "var(--border-radius)",
-                                    marginLeft: 0,
-                                    marginRight: 8,
-                                    textDecoration: "none",
-                                    boxShadow: isActive ? "0 2px 8px rgba(40,54,80,0.08)" : "none",
-                                    border: isActive ? "2px solid #fff" : "2px solid transparent",
-                                    transition: "all 0.2s"
-                                })}
-                                onMouseOver={e => {
-                                    if (!e.target.style.background || e.target.style.background === "transparent") {
-                                        e.target.style.background = "rgba(255,255,255,0.18)";
-                                    }
-                                }}
-                                onMouseOut={e => {
-                                    if (!e.target.className.includes('active')) {
-                                        e.target.style.background = "transparent";
-                                    }
-                                }}
-                            >
-                                Transaction
-                            </NavLink>
-                            <NavLink
-                                to="/stocktake"
-                                style={({ isActive }) => ({
-                                    background: isActive ? "#fff" : "transparent",
-                                    color: isActive ? "var(--primary)" : "#fff",
-                                    fontWeight: 600,
-                                    padding: "8px 18px",
-                                    borderRadius: "var(--border-radius)",
-                                    marginLeft: 0,
-                                    marginRight: 8,
-                                    textDecoration: "none",
-                                    boxShadow: isActive ? "0 2px 8px rgba(40,54,80,0.08)" : "none",
-                                    border: isActive ? "2px solid #fff" : "2px solid transparent",
-                                    transition: "all 0.2s"
-                                })}
-                                onMouseOver={e => {
-                                    if (!e.target.style.background || e.target.style.background === "transparent") {
-                                        e.target.style.background = "rgba(255,255,255,0.18)";
-                                    }
-                                }}
-                                onMouseOut={e => {
-                                    if (!e.target.className.includes('active')) {
-                                        e.target.style.background = "transparent";
-                                    }
-                                }}
-                            >
-                                Stock Take
-                            </NavLink>
-                            <NavLink
-                                to="/reports"
-                                style={({ isActive }) => ({
-                                    background: isActive ? "#fff" : "transparent",
-                                    color: isActive ? "var(--primary)" : "#fff",
-                                    fontWeight: 600,
-                                    padding: "8px 18px",
-                                    borderRadius: "var(--border-radius)",
-                                    marginLeft: 0,
-                                    marginRight: 8,
-                                    textDecoration: "none",
-                                    boxShadow: isActive ? "0 2px 8px rgba(40,54,80,0.08)" : "none",
-                                    border: isActive ? "2px solid #fff" : "2px solid transparent",
-                                    transition: "all 0.2s"
-                                })}
-                                onMouseOver={e => {
-                                    if (!e.target.style.background || e.target.style.background === "transparent") {
-                                        e.target.style.background = "rgba(255,255,255,0.18)";
-                                    }
-                                }}
-                                onMouseOut={e => {
-                                    if (!e.target.className.includes('active')) {
-                                        e.target.style.background = "transparent";
-                                    }
-                                }}
-                            >
-                                Reports
-                            </NavLink>
-                            <button onClick={handleClick} style={{
-                                background: "#fff",
-                                color: "var(--primary)",
-                                border: "2px solid #fff",
-                                padding: "8px 18px",
-                                borderRadius: "var(--border-radius)",
-                                fontWeight: 600,
-                                marginLeft: 0,
-                                marginRight: 8,
-                                cursor: "pointer",
-                                boxShadow: "0 2px 8px rgba(40,54,80,0.08)",
-                                transition: "background 0.2s, color 0.2s"
-                            }}
-                                onMouseOver={e => { e.target.style.background = "var(--primary-dark)"; e.target.style.color = "#fff"; }}
-                                onMouseOut={e => { e.target.style.background = "#fff"; e.target.style.color = "var(--primary)"; }}
-                            >
-                                Log out
-                            </button>
-                        </>
-                    )}
-                    {!user && (
-                        <>
-                            <NavLink
-                                to="/login"
-                                style={({ isActive }) => ({
-                                    background: isActive ? "#fff" : "transparent",
-                                    color: isActive ? "var(--primary)" : "#fff",
-                                    fontWeight: 600,
-                                    padding: "8px 18px",
-                                    borderRadius: "var(--border-radius)",
-                                    marginLeft: 0,
-                                    marginRight: 8,
-                                    textDecoration: "none",
-                                    boxShadow: isActive ? "0 2px 8px rgba(40,54,80,0.08)" : "none",
-                                    border: isActive ? "2px solid #fff" : "2px solid transparent",
-                                    transition: "all 0.2s"
-                                })}
-                                onMouseOver={e => {
-                                    if (!e.target.style.background || e.target.style.background === "transparent") {
-                                        e.target.style.background = "rgba(255,255,255,0.18)";
-                                    }
-                                }}
-                                onMouseOut={e => {
-                                    if (!e.target.className.includes('active')) {
-                                        e.target.style.background = "transparent";
-                                    }
-                                }}
-                            >
-                                Login
-                            </NavLink>
-                            <NavLink
-                                to="/signup"
-                                style={({ isActive }) => ({
-                                    background: isActive ? "#fff" : "transparent",
-                                    color: isActive ? "var(--primary)" : "#fff",
-                                    fontWeight: 600,
-                                    padding: "8px 18px",
-                                    borderRadius: "var(--border-radius)",
-                                    marginLeft: 0,
-                                    marginRight: 8,
-                                    textDecoration: "none",
-                                    boxShadow: isActive ? "0 2px 8px rgba(40,54,80,0.08)" : "none",
-                                    border: isActive ? "2px solid #fff" : "2px solid transparent",
-                                    transition: "all 0.2s"
-                                })}
-                                onMouseOver={e => {
-                                    if (!e.target.style.background || e.target.style.background === "transparent") {
-                                        e.target.style.background = "rgba(255,255,255,0.18)";
-                                    }
-                                }}
-                                onMouseOut={e => {
-                                    if (!e.target.className.includes('active')) {
-                                        e.target.style.background = "transparent";
-                                    }
-                                }}
-                            >
-                                Signup
-                            </NavLink>
-                        </>
-                    )}
-                </nav>
+  const closeMobileMenu = () => {
+    setMobileMenuOpen(false)
+  }
+
+  return (
+    <header className="modern-navbar">
+      <div className="navbar-container">
+        <Link to="/" className="navbar-logo" onClick={closeMobileMenu}>
+          <div className="navbar-logo-img">
+            📚
+          </div>
+          <div>
+            <h1 className="navbar-logo-text">L & J Warehouse Co</h1>
+            <p className="navbar-logo-subtitle">Book Inventory System</p>
+          </div>
+        </Link>
+
+        {user && (
+          <button 
+            className="mobile-menu-toggle" 
+            onClick={toggleMobileMenu}
+            aria-label="Toggle menu"
+          >
+            {mobileMenuOpen ? "✕" : "☰"}
+          </button>
+        )}
+
+        {user && (
+          <nav className={`navbar-nav ${mobileMenuOpen ? "mobile-open" : ""}`}>
+            <NavLink
+              to="/"
+              end
+              className={({ isActive }) => `navbar-link ${isActive ? "active" : ""}`}
+              onClick={closeMobileMenu}
+            >
+              <span className="navbar-link-icon">📊</span>
+              <span>Dashboard</span>
+            </NavLink>
+            <NavLink
+              to="/transaction"
+              className={({ isActive }) => `navbar-link ${isActive ? "active" : ""}`}
+              onClick={closeMobileMenu}
+            >
+              <span className="navbar-link-icon">💳</span>
+              <span>Transaction</span>
+            </NavLink>
+            <NavLink
+              to="/stocktake"
+              className={({ isActive }) => `navbar-link ${isActive ? "active" : ""}`}
+              onClick={closeMobileMenu}
+            >
+              <span className="navbar-link-icon">📦</span>
+              <span>Stock Take</span>
+            </NavLink>
+            <NavLink
+              to="/reports"
+              className={({ isActive }) => `navbar-link ${isActive ? "active" : ""}`}
+              onClick={closeMobileMenu}
+            >
+              <span className="navbar-link-icon">📈</span>
+              <span>Reports</span>
+            </NavLink>
+          </nav>
+        )}
+
+        {user && (
+          <div className="navbar-user">
+            <div className="user-info">
+              <p className="user-email">{user.email}</p>
+              <p className="user-role">{user.role}</p>
             </div>
-        </header>
-    )
+            <button 
+              className="logout-button" 
+              onClick={handleLogout}
+              aria-label="Logout"
+            >
+              <span>🚪</span>
+              <span>Logout</span>
+            </button>
+          </div>
+        )}
+
+        {!user && (
+          <nav className="navbar-nav">
+            <NavLink
+              to="/login"
+              className={({ isActive }) => `navbar-link ${isActive ? "active" : ""}`}
+            >
+              Login
+            </NavLink>
+            <NavLink
+              to="/signup"
+              className={({ isActive }) => `navbar-link ${isActive ? "active" : ""}`}
+            >
+              Signup
+            </NavLink>
+          </nav>
+        )}
+      </div>
+    </header>
+  )
 }
 
 export default Navbar

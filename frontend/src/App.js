@@ -1,10 +1,11 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom"
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom"
 import { AuthContextProvider } from "./context/AuthContext"
 import { TransactionContextProvider } from "./context/TransactionContext"
 import { StockTakeContextProvider } from "./context/StockTakeContext"
 import { useAuthContext } from "./hooks/useAuthContext"
 
 import Navbar from "./components/Navbar"
+import ResourceDashboard from "./components/ResourceDashboard"
 import Dashboard from "./pages/Dashboard"
 import Login from "./pages/Login"
 import Signup from "./pages/Signup"
@@ -14,11 +15,16 @@ import ReportsPage from "./pages/ReportsPage"
 
 function AppContent() {
   const { user } = useAuthContext()
+  const location = useLocation()
+  
+  // Show ResourceDashboard only on the main dashboard page
+  const showResourceDashboard = user && location.pathname === "/"
 
   return (
-    <BrowserRouter>
+    <>
       <Navbar />
-      <div className="p-4 max-w-6xl mx-auto">
+      {showResourceDashboard && <ResourceDashboard />}
+      <div className="page-container">
         <Routes>
           <Route path="/" element={user ? <Dashboard /> : <Navigate to="/login" />} />
           <Route path="/transaction" element={user ? <TransactionPage /> : <Navigate to="/login" />} />
@@ -28,6 +34,14 @@ function AppContent() {
           <Route path="/signup" element={!user ? <Signup /> : <Navigate to="/" />} />
         </Routes>
       </div>
+    </>
+  )
+}
+
+function AppWrapper() {
+  return (
+    <BrowserRouter>
+      <AppContent />
     </BrowserRouter>
   )
 }
@@ -37,7 +51,7 @@ function App() {
     <AuthContextProvider>
       <TransactionContextProvider>
         <StockTakeContextProvider>
-          <AppContent />
+          <AppWrapper />
         </StockTakeContextProvider>
       </TransactionContextProvider>
     </AuthContextProvider>
