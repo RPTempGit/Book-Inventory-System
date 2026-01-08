@@ -1,288 +1,230 @@
+/**
+ * ResourceDashboard.js
+ * A rotating dashboard component with visual charts and sections
+ * 
+ * Edited by: RPTempGit
+ * Last Updated: 2026-01-08 12:39:00 UTC
+ */
+
 import React, { useState, useEffect } from 'react';
 import './ResourceDashboard.css';
 
 /**
  * ResourceDashboard Component
- * 
- * A rotating dashboard component that displays resource availability 
- * and total inventory with real-time updates.
- * 
- * Features:
- * - Rotating carousel of resource metrics
- * - Real-time resource availability tracking
- * - Total inventory display
- * - Automatic refresh interval
- * - Responsive design
- * 
- * Edited by: RPTempGit
- * Date: 2026-01-07 15:19:01 UTC
+ * Displays rotating sections with visual charts and resource metrics
  */
-
 const ResourceDashboard = () => {
-  const [currentSlide, setCurrentSlide] = useState(0);
-  const [resources, setResources] = useState([]);
-  const [totalInventory, setTotalInventory] = useState(0);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [refreshTime, setRefreshTime] = useState(new Date());
+  const [activeSection, setActiveSection] = useState(0);
+  const [sectionData, setSectionData] = useState([]);
 
-  // Sample resource data - replace with actual API call
-  const mockResources = [
+  // Dashboard sections data
+  const dashboardSections = [
     {
       id: 1,
-      name: 'Fiction Books',
-      available: 248,
-      total: 350,
-      category: 'Fiction',
-      icon: '📚'
+      title: 'Book Inventory Overview',
+      type: 'chart',
+      data: {
+        total: 1250,
+        available: 890,
+        borrowed: 360,
+        categories: ['Fiction', 'Non-Fiction', 'Reference', 'Children']
+      }
     },
     {
       id: 2,
-      name: 'Non-Fiction Books',
-      available: 162,
-      total: 200,
-      category: 'Non-Fiction',
-      icon: '📖'
+      title: 'User Activity',
+      type: 'chart',
+      data: {
+        activeUsers: 450,
+        newUsers: 32,
+        totalBorrowals: 1200,
+        returns: 1050
+      }
     },
     {
       id: 3,
-      name: 'Reference Materials',
-      available: 89,
-      total: 120,
-      category: 'Reference',
-      icon: '📕'
+      title: 'Resource Utilization',
+      type: 'chart',
+      data: {
+        utilization: 71,
+        peakHours: '2PM-4PM',
+        averageBorrowDuration: '14 days',
+        overdueItems: 23
+      }
     },
     {
       id: 4,
-      name: 'Children\'s Books',
-      available: 156,
-      total: 180,
-      category: 'Children',
-      icon: '🧒'
-    },
-    {
-      id: 5,
-      name: 'Academic Journals',
-      available: 73,
-      total: 100,
-      category: 'Academic',
-      icon: '🎓'
-    },
-    {
-      id: 6,
-      name: 'Digital Resources',
-      available: 450,
-      total: 500,
-      category: 'Digital',
-      icon: '💾'
+      title: 'Inventory Health',
+      type: 'chart',
+      data: {
+        goodCondition: 92,
+        needsRepair: 5,
+        needsReplacement: 3,
+        lastAudit: '2026-01-05'
+      }
     }
   ];
 
-  // Initialize dashboard data
+  // Auto-rotate sections every 8 seconds
   useEffect(() => {
-    const initializeDashboard = async () => {
-      try {
-        setLoading(true);
-        // Simulate API call - replace with actual API endpoint
-        await new Promise(resolve => setTimeout(resolve, 500));
-        
-        setResources(mockResources);
-        const total = mockResources.reduce((sum, resource) => sum + resource.total, 0);
-        setTotalInventory(total);
-        setLoading(false);
-      } catch (err) {
-        setError('Failed to load resource data');
-        setLoading(false);
-      }
-    };
+    const rotationInterval = setInterval(() => {
+      setActiveSection((prev) => (prev + 1) % dashboardSections.length);
+    }, 8000);
 
-    initializeDashboard();
-  }, []);
+    return () => clearInterval(rotationInterval);
+  }, [dashboardSections.length]);
 
-  // Auto-rotate slides every 5 seconds
-  useEffect(() => {
-    if (resources.length === 0) return;
+  const currentSection = dashboardSections[activeSection];
 
-    const interval = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % resources.length);
-    }, 5000);
-
-    return () => clearInterval(interval);
-  }, [resources]);
-
-  // Update refresh time every second
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setRefreshTime(new Date());
-    }, 1000);
-
-    return () => clearInterval(timer);
-  }, []);
-
-  const handlePrevSlide = () => {
-    setCurrentSlide((prev) => (prev - 1 + resources.length) % resources.length);
-  };
-
-  const handleNextSlide = () => {
-    setCurrentSlide((prev) => (prev + 1) % resources.length);
-  };
-
-  const handleDotClick = (index) => {
-    setCurrentSlide(index);
-  };
-
-  const formatDateTime = (date) => {
-    const year = date.getUTCFullYear();
-    const month = String(date.getUTCMonth() + 1).padStart(2, '0');
-    const day = String(date.getUTCDate()).padStart(2, '0');
-    const hours = String(date.getUTCHours()).padStart(2, '0');
-    const minutes = String(date.getUTCMinutes()).padStart(2, '0');
-    const seconds = String(date.getUTCSeconds()).padStart(2, '0');
+  /**
+   * Renders a bar chart visualization
+   */
+  const renderBarChart = (data) => {
+    const maxValue = Math.max(...Object.values(data).filter(v => typeof v === 'number'));
     
-    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+    return (
+      <div className="chart-container bar-chart">
+        {Object.entries(data).map(([key, value]) => {
+          if (typeof value !== 'number') return null;
+          const percentage = (value / maxValue) * 100;
+          
+          return (
+            <div key={key} className="bar-item">
+              <label>{key}: {value}</label>
+              <div className="bar">
+                <div className="bar-fill" style={{ width: `${percentage}%` }}></div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    );
   };
 
-  const getAvailabilityPercentage = (available, total) => {
-    return total > 0 ? Math.round((available / total) * 100) : 0;
+  /**
+   * Renders a pie chart visualization
+   */
+  const renderPieChart = (data) => {
+    const values = Object.values(data).filter(v => typeof v === 'number');
+    const total = values.reduce((sum, val) => sum + val, 0);
+    let currentRotation = 0;
+    const colors = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#FFA07A', '#98D8C8'];
+
+    return (
+      <div className="chart-container pie-chart">
+        <div className="pie">
+          <svg viewBox="0 0 200 200" width="200" height="200">
+            {values.map((value, index) => {
+              const sliceAngle = (value / total) * 360;
+              const startAngle = currentRotation;
+              const endAngle = currentRotation + sliceAngle;
+              currentRotation = endAngle;
+
+              const startRad = (startAngle * Math.PI) / 180;
+              const endRad = (endAngle * Math.PI) / 180;
+
+              const x1 = 100 + 80 * Math.cos(startRad);
+              const y1 = 100 + 80 * Math.sin(startRad);
+              const x2 = 100 + 80 * Math.cos(endRad);
+              const y2 = 100 + 80 * Math.sin(endRad);
+
+              const largeArc = sliceAngle > 180 ? 1 : 0;
+
+              const pathData = `M 100 100 L ${x1} ${y1} A 80 80 0 ${largeArc} 1 ${x2} ${y2} Z`;
+
+              return (
+                <path
+                  key={index}
+                  d={pathData}
+                  fill={colors[index % colors.length]}
+                  stroke="white"
+                  strokeWidth="2"
+                />
+              );
+            })}
+          </svg>
+        </div>
+        <div className="pie-legend">
+          {Object.entries(data).map(([key, value], index) => {
+            if (typeof value !== 'number') return null;
+            const percentage = ((value / total) * 100).toFixed(1);
+            return (
+              <div key={key} className="legend-item">
+                <span
+                  className="legend-color"
+                  style={{ backgroundColor: colors[index % colors.length] }}
+                ></span>
+                <span>{key}: {value} ({percentage}%)</span>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    );
   };
 
-  const getAvailabilityColor = (percentage) => {
-    if (percentage >= 80) return '#4CAF50'; // Green
-    if (percentage >= 50) return '#FFC107'; // Yellow
-    if (percentage >= 20) return '#FF9800'; // Orange
-    return '#F44336'; // Red
+  /**
+   * Renders metric cards
+   */
+  const renderMetrics = (data) => {
+    return (
+      <div className="metrics-grid">
+        {Object.entries(data).map(([key, value]) => (
+          <div key={key} className="metric-card">
+            <div className="metric-label">{key}</div>
+            <div className="metric-value">{value}</div>
+          </div>
+        ))}
+      </div>
+    );
   };
-
-  if (loading) {
-    return <div className="resource-dashboard loading">Loading dashboard...</div>;
-  }
-
-  if (error) {
-    return <div className="resource-dashboard error">{error}</div>;
-  }
-
-  if (resources.length === 0) {
-    return <div className="resource-dashboard empty">No resources available</div>;
-  }
-
-  const currentResource = resources[currentSlide];
-  const availabilityPercentage = getAvailabilityPercentage(currentResource.available, currentResource.total);
-  const availabilityColor = getAvailabilityColor(availabilityPercentage);
 
   return (
     <div className="resource-dashboard">
-      <div className="dashboard-header">
+      <header className="dashboard-header">
         <h1>📊 Resource Dashboard</h1>
-        <div className="header-info">
-          <p className="refresh-time">Last Updated: {formatDateTime(refreshTime)} UTC</p>
-          <p className="edited-by">Edited by: RPTempGit</p>
-        </div>
-      </div>
+        <p className="subtitle">Real-time inventory and resource metrics</p>
+      </header>
 
-      <div className="dashboard-container">
-        {/* Main Carousel */}
-        <div className="carousel-section">
-          <div className="carousel-controls">
-            <button className="carousel-btn prev-btn" onClick={handlePrevSlide} aria-label="Previous resource">
-              ❮
-            </button>
-            
-            <div className="carousel-content">
-              <div className="resource-card">
-                <div className="card-icon">{currentResource.icon}</div>
-                
-                <div className="card-header">
-                  <h2>{currentResource.name}</h2>
-                  <span className="category-badge">{currentResource.category}</span>
-                </div>
-
-                <div className="availability-meter">
-                  <div className="meter-label">
-                    <span>Availability</span>
-                    <span className="percentage">{availabilityPercentage}%</span>
-                  </div>
-                  <div className="meter-bar">
-                    <div 
-                      className="meter-fill" 
-                      style={{
-                        width: `${availabilityPercentage}%`,
-                        backgroundColor: availabilityColor
-                      }}
-                    />
-                  </div>
-                </div>
-
-                <div className="inventory-stats">
-                  <div className="stat">
-                    <span className="stat-label">Available</span>
-                    <span className="stat-value available">{currentResource.available}</span>
-                  </div>
-                  <div className="stat-divider">/</div>
-                  <div className="stat">
-                    <span className="stat-label">Total</span>
-                    <span className="stat-value total">{currentResource.total}</span>
-                  </div>
-                </div>
-
-                <div className="resource-info">
-                  <p>Resource ID: {currentResource.id}</p>
-                  <p>Status: {availabilityPercentage >= 80 ? '✅ Well Stocked' : availabilityPercentage >= 50 ? '⚠️ Adequate' : '❌ Low Stock'}</p>
-                </div>
-              </div>
-            </div>
-
-            <button className="carousel-btn next-btn" onClick={handleNextSlide} aria-label="Next resource">
-              ❯
-            </button>
+      <div className="dashboard-content">
+        <div className="section-display">
+          <div className="section-header">
+            <h2>{currentSection.title}</h2>
+            <span className="section-indicator">
+              {activeSection + 1} / {dashboardSections.length}
+            </span>
           </div>
 
-          {/* Carousel Dots */}
-          <div className="carousel-dots">
-            {resources.map((_, index) => (
+          <div className="section-body">
+            {currentSection.type === 'chart' && renderMetrics(currentSection.data)}
+          </div>
+        </div>
+
+        {/* Section Navigation */}
+        <div className="section-navigation">
+          <div className="nav-dots">
+            {dashboardSections.map((_, index) => (
               <button
                 key={index}
-                className={`dot ${index === currentSlide ? 'active' : ''}`}
-                onClick={() => handleDotClick(index)}
-                aria-label={`Go to resource ${index + 1}`}
+                className={`nav-dot ${activeSection === index ? 'active' : ''}`}
+                onClick={() => setActiveSection(index)}
+                aria-label={`Go to section ${index + 1}`}
               />
             ))}
           </div>
         </div>
-
-        {/* Total Inventory Summary */}
-        <div className="inventory-summary">
-          <h3>📦 Inventory Summary</h3>
-          <div className="summary-card">
-            <div className="total-inventory">
-              <p className="summary-label">Total Inventory</p>
-              <p className="summary-value">{totalInventory}</p>
-              <p className="summary-items">items across all categories</p>
-            </div>
-
-            <div className="resource-grid">
-              {resources.map((resource, index) => (
-                <div 
-                  key={resource.id} 
-                  className={`mini-card ${index === currentSlide ? 'highlighted' : ''}`}
-                  onClick={() => handleDotClick(index)}
-                >
-                  <div className="mini-icon">{resource.icon}</div>
-                  <div className="mini-name">{resource.category}</div>
-                  <div className="mini-count">{resource.available}/{resource.total}</div>
-                  <div className="mini-percentage">
-                    {getAvailabilityPercentage(resource.available, resource.total)}%
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
       </div>
 
-      <div className="dashboard-footer">
-        <p>Resource Availability System • Last Updated: {formatDateTime(refreshTime)} UTC</p>
-        <p className="footer-credit">Component created by: RPTempGit</p>
-      </div>
+      <footer className="dashboard-footer">
+        <p>Last Updated: {new Date().toLocaleString('en-US', { 
+          year: 'numeric', 
+          month: '2-digit', 
+          day: '2-digit', 
+          hour: '2-digit', 
+          minute: '2-digit',
+          second: '2-digit'
+        })} UTC</p>
+      </footer>
     </div>
   );
 };
