@@ -8,11 +8,9 @@ const Navbar = () => {
   const { logout } = useLogout()
   const { user } = useAuthContext()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-  const [dropdownOpen, setDropdownOpen] = useState(false)
 
   const handleLogout = () => {
     logout()
-    setDropdownOpen(false)
   }
 
   const toggleMobileMenu = () => {
